@@ -7,6 +7,9 @@ const port = 3000
 // 載入 shortURL model
 const ShortURL = require('./models/shortURL')
 
+// 載入express-handlebars
+const exphbs = require('express-handlebars')
+
 // 載入 mongoose
 const mongoose = require('mongoose') 
 
@@ -29,6 +32,11 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+// setting template engine
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
+app.set('view engine', 'handlebars')
+
+
 // setting body-parser
 //不管從哪個路由發送過來的請求，都先經過 bodyParser 進行前置處理
 //由於 body-parser 已經是 Express 內建的一部分了，因此我們其實可以直接呼叫 express，就能取得 body-parser 提供的方法
@@ -38,7 +46,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // setting routes
 app.get('/', (req, res) => {
-  res.send('hello world')
+  res.render('index')
 })
 
 
