@@ -10,6 +10,10 @@ const ShortURL = require('./models/shortURL')
 // 載入express-handlebars
 const exphbs = require('express-handlebars')
 
+// 載入 method-override
+const methodOverride = require('method-override') 
+
+
 // 載入 mongoose
 const mongoose = require('mongoose') 
 
@@ -42,6 +46,9 @@ app.set('view engine', 'handlebars')
 //由於 body-parser 已經是 Express 內建的一部分了，因此我們其實可以直接呼叫 express，就能取得 body-parser 提供的方法
 //app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.urlencoded({ extended: true }))
+
+// 用 app.use 設定每一筆請求都會透過 methodOverride 進行前置處理
+app.use(methodOverride('_method'))
 
 
 // setting routes
