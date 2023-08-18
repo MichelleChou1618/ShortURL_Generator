@@ -1,6 +1,6 @@
 # URL Shortener 短網址產生器
 
-![Index page about shortURL Generator](./public/image/index_1.png)
+![Index page about shortURL Generator](./public/image/index.png)
 
 
 ## 介紹
