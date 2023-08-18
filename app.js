@@ -40,6 +40,7 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
+
 // setting template engine
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
@@ -64,51 +65,34 @@ app.get('/', (req, res) => {
 
 
 app.post('/', (req, res) => {
-  console.log(req.body)
+
   //取得表單的url
   const originalURL = req.body.url
-  const originalURL_c = originalURL.trim().toLowerCase()
+  console.log('original URL: ', originalURL)
+  //const originalURL_c = originalURL.trim().toLowerCase()
+  const host = req.headers.origin
+  //console.log('host: ', host)
 
-  const URL_list = [
-    { originalURL: "https:www.google.com", shortURL: '23hrd' },
-    { originalURL: "https:www.google2.com", shortURL: 'H4JES' },
-    { originalURL: "https:www.google3.com", shortURL: '3Ydd9' }]
-
-  console.log('short url: ', generateShortURL(5, URL_list))
-
-  // //取得資料庫的資料
-  // let url_list = ShortURL.find()
-  //                         .lean() 
-  //                         .catch(error => console.error(error)) // 錯誤處理
-
-
-
-
-  /*
-
-  //取得資料庫的資料
-  ShortURL.find() 
+  //取得資料庫的資料: 將符合originalURL的資料撈出
+  ShortURL.findOne({ originalURL: originalURL }) 
     .lean() 
-    .then(shortURLs => {
-      //將符合originalURL的資料撈出
-      const filteredShortURL = shortURLs.find(
-        data => data.originalURL.toLowerCase().trim().includes(originalURL_c)
-      )
+    .then(data => {
+  
+      //如果originalURL不存在DB, 則產生一個新shortURL資料, 存入DB
+      if (!data){
+        data = { originalURL: originalURL ,shortURL:generateShortURL(5)}
+        console.log('Create new short URL: ',data.shortURL)
+        ShortURL.create(data)
+        
+      } 
 
-      //如果originalURL不存在DB, 則產生一個新shortURL資料, 存入DB並顯示在UI
-      if (!filteredShortURL){
-        const newURL = generateShortenURL()
-        return ShortURL.create(newURL)
-        res.render('result',{shortenURL: newURL.shortenURL} )
-      }
-
-      //如果originalURL存在DB, 直接顯示在UI
-      res.render('result', { shortenURL: filteredShortURL.shortenURL })
-
-      
-      }) // 將資料傳給 index 樣板
+      console.log('ShortURL already existed:', data.shortURL)
+      // 將資料傳給 index 樣板
+      res.render('result', { host: req.headers.origin, shortURL: data.shortURL })
+      console.log('Rendered successfully.')
+     
+      }) 
     .catch(error => console.error(error)) // 錯誤處理
-*/
 })
 
 
