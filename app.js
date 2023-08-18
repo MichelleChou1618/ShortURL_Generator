@@ -96,8 +96,36 @@ app.post('/', (req, res) => {
 })
 
 
+app.get('/:shortURL', (req, res) => {
+  console.log(req.params)
+  //取得shortURL
+  const shortURL = req.params.shortURL
+  
+
+  //至資料庫找尋相關的data
+  ShortURL.findOne({shortURL:shortURL})
+    .lean()
+    .then(data => {
+      //如果data不存在, 則印出error message
+      if (!data) {
+         res.render("error", {
+          errorMsg: "Can't found the URL",
+          errorURL: req.headers.host + "/" + shortURL,
+        })
+      } else {
+        //如果data存在, 導至data所屬的原url
+        res.redirect(data.originalURL)
+      }
+      
+    })
+    .catch(error => console.error(error))
+
+})
+
 
 // starts the express server and listening for connections.
 app.listen(port, () => {
   console.log(`Express app listening on port ${port}.`)
 })
+
+

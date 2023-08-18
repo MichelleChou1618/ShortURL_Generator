@@ -1,7 +1,17 @@
 <div class="result">
   <h3>Success! Please use this link:</h3>
-  <p id="generatedURL">
-    <a href="./shortURLs/{{ shortURL }}">{{host}}/{{shortURL}}</a>
-  </p>
+  {{!-- <p id="generatedURL"> --}}
+    <a id="generatedURL" href="./{{ shortURL }}">{{host}}/{{shortURL}}</a>
+    {{!--
+  </p> --}}
 </div>
-<button class="copy">Copy</button>
+<div class="row">
+  <div class="tooltip">
+    <button onclick="copyURL()" onmouseout="outFunc()">
+      <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+      Copy
+    </button>
+
+  </div>
+  <a href="/" style="display: inline;">Back</a>
+</div>
