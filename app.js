@@ -5,7 +5,7 @@ const app = express()
 const port = 3000
 
 // 載入 shortURL model
-const ShortURL = require('./models/shortURL')
+//const ShortURL = require('./models/shortURL')
 
 // 載入express-handlebars
 const exphbs = require('express-handlebars')
@@ -14,7 +14,10 @@ const exphbs = require('express-handlebars')
 const methodOverride = require('method-override') 
 
 //載入 generateShortURL
-const generateShortURL = require('./generateShortURL')
+//const generateShortURL = require('./generateShortURL')
+
+// refactor: 引用路由器: 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案
+const routes = require('./routes')
 
 
 // 載入 mongoose
@@ -57,13 +60,17 @@ app.use(express.urlencoded({ extended: true }))
 // 用 app.use 設定每一筆請求都會透過 methodOverride 進行前置處理
 app.use(methodOverride('_method'))
 
+// refactor: 將 request 導入路由器
+app.use(routes)
 
+/*
 // setting routes
+//首頁路由
 app.get('/', (req, res) => {
   res.render('index')
 })
 
-
+//提送originalURL form 路由
 app.post('/', (req, res) => {
 
   //取得表單的url
@@ -95,7 +102,7 @@ app.post('/', (req, res) => {
     .catch(error => console.error(error)) // 錯誤處理
 })
 
-
+//連結至短網址所指的實際網址路由
 app.get('/:shortURL', (req, res) => {
   console.log(req.params)
   //取得shortURL
@@ -121,7 +128,7 @@ app.get('/:shortURL', (req, res) => {
     .catch(error => console.error(error))
 
 })
-
+*/
 
 // starts the express server and listening for connections.
 app.listen(port, () => {
