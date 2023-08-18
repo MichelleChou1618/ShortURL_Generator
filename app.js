@@ -19,7 +19,10 @@ const methodOverride = require('method-override')
 // refactor: 引用路由器: 引入路由器時，路徑設定為 /routes 就會自動去尋找目錄下叫做 index 的檔案
 const routes = require('./routes')
 
+//refactor: 將mongoose連線設定抽離app.js,再從app.js引用設定檔:對 app.js 而言，Mongoose 連線設定只需要「被執行」，不需要接到任何回傳參數繼續利用，所以這裡不需要再設定變數
+require('./config/mongoose')
 
+/*
 // 載入 mongoose
 const mongoose = require('mongoose') 
 
@@ -42,6 +45,7 @@ db.on('error', () => {
 db.once('open', () => {
   console.log('mongodb connected!')
 })
+*/
 
 
 // setting template engine
