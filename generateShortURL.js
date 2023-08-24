@@ -4,7 +4,7 @@ function sample(array) {
   return array[index]
 }
 
-function generateShortURL(length){
+function generateShortURL(length, URL_list){
   // define things user might want
   const lowerCaseLetters = 'abcdefghijklmnopqrstuvwxyz'
   const upperCaseLetters = lowerCaseLetters.toUpperCase()
@@ -23,9 +23,9 @@ function generateShortURL(length){
  //console.log('shortURL', shortURL)
  
 //如果產出來的url與原本就有的shortURL重複, 則重新產生
-//  while(URL_list.filter(data => data.shortURL.includes(shortURL)).length >0) {
-//    shortURL = generateShortURL(length,URL_list)
-//  }
+  while(URL_list.filter(data => data.shortURL.includes(shortURL)).length >0) {
+    shortURL = generateShortURL(length, URL_list)
+  }
   
  // return the generated url
   return shortURL

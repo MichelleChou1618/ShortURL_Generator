@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 })
 
 //提送originalURL form 路由
-router.post('/', (req, res) => {
+router.post('/', async(req, res) => {
 
   //取得表單的url
   const originalURL = req.body.url
@@ -22,6 +22,45 @@ router.post('/', (req, res) => {
   const host = req.headers.origin
   //console.log('host: ', host)
 
+  //取得現行資料庫的所有資料
+  let url_list = await ShortURL.find()
+    .lean()
+    .then(data => {
+      //console.log('data: ',data)
+      return data
+    })
+    .catch(error => console.error(error)) // 錯誤處理
+
+  //取得現行資料庫, 符合originalURL的資料
+  let url = await ShortURL.findOne({ originalURL: originalURL })
+    .lean()
+    .then(data => {
+      //console.log('data: ',data)
+      return data
+    })
+    .catch(error => console.error(error)) // 錯誤處理
+
+   //驗證取得的資料
+   console.log('url_list: ', url_list)
+   console.log('url: ', url)
+
+  //如果originalURL不存在DB, 則產生一個新shortURL資料, 存入DB
+  if (!url) {
+    url = { originalURL: originalURL, shortURL: generateShortURL(5, url_list) }
+    console.log('Create new short URL: ', url.shortURL)
+    ShortURL.create(url)
+  } else {
+    console.log('ShortURL already existed:', url.shortURL)
+  }
+  
+  // 將資料傳給 index 樣板
+  res.render('result', { host: req.headers.origin, shortURL: url.shortURL })
+  console.log('Rendered successfully.')
+
+
+})
+
+ /*
   //取得資料庫的資料: 將符合originalURL的資料撈出
   ShortURL.findOne({ originalURL: originalURL })
     .lean()
@@ -43,6 +82,8 @@ router.post('/', (req, res) => {
     })
     .catch(error => console.error(error)) // 錯誤處理
 })
+
+*/
 
 //連結至短網址所指的實際網址路由
 router.get('/:shortURL', (req, res) => {
